@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <button id="getGroupsBtn" type="submit">Get groups</button>
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script>
+      let allMessages = [];
+      $('#getGroupsBtn').on('click', (e) => {
+        console.log('clicked button');
+        $.ajax({
+          url: `https://api.groupme.com/v3/groups?token=${token}`,
+          method: 'GET'
+        }).done((data) => {
+          $('body').append(`<div id="groups"></div>`)
+          for(let i = 0; i < data.response.length; i++){
+            $('#groups').append(`
+              <a class="groupNames">
+                <p id="${data.response[i].id}">
+                  ${data.response[i].name}
+                </p>
+              </a>
+              <button id="members_in_${data.response[i].id}">Members</button>
+              <button id="messages_in_${data.response[i].id}">Messages</button>
+              `)
+              $(`#messages_in_${data.response[i].id}`).on('click', (e) => {
+                oneGroupsMessages(data.response[i].id, token);
+              });
+          }
+        }).fail((err) => {
+          console.log(err);
+        })
+      })
+      function getAllMessages(before_id,id,token){
+        $.ajax({
+          url: `https://api.groupme.com/v3/groups/${id}/messages?token=${token}&limit=100&before_id=${before_id}`,
+          method: 'GET'
+        }).done((data) => {
+          if(!data){
+            return;
+          } else {
+            for(let i = 0, x = data.response.messages.length, y=data.response.messages; i < x; i++){
+              if(y[i].sender_id == 'system' || y[i].sender_id == 'calendar'){
+                continue;
+              }
+              allMessages.push({
+                id: y[i].id,
+                name: y[i].name,
+                sender_type: y[i].sender_type,
+                group_id: y[i].group_id,
+                text: y[i].text,
+                user_id: y[i].sender_id,
+                favorites: y[i].favorited_by.length,
+                favorited_by: y[i].favorited_by,
+                image_url: null
+              })
+            }
+            $.ajax({
+              url: 'http://localhost:3000/messages/all',
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(allMessages)
+            }).done((res) => {
+              allMessages = [];
+              getAllMessages(data.response.messages[data.response.messages.length - 1].id, id, token);
+            }).fail((err) => {
+              console.log(err);
+            })
+          }
+        }).fail((err) => {
+          console.log(err);
+        })
+      }
+      function oneGroupsMessages(id, token){
+        $.ajax({
+          url: `https://api.groupme.com/v3/groups/${id}/messages?token=${token}&limit=2`,
+          method: 'GET'
+        }).done((data) => {
+          $(`#${id}`).append(`<div class="group"></div>`);
+          for(let i = 0, x = data.response.messages.length, y=data.response.messages; i < x; i++){
+            $(`#${id} .group`).append(`
+              <p class="message">
+                ${y[i].name}: ${y[i].text}
+              </p>`)
+          }
+          getAllMessages(data.response.messages[data.response.messages.length - 1].id, id, token);
+        }).fail((err) => {
+          console.log(err);
+        })
+      }
+
+    </script>
+  </body>
+</html>
