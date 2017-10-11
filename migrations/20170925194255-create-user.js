@@ -9,13 +9,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       name: {
         type: Sequelize.STRING
       },
       phone_number: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       image_url: {
         type: Sequelize.STRING

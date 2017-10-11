@@ -8,35 +8,27 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <button id="getGroupsBtn" type="submit">Get groups</button>
-
+    <div data-token=<%= token %>></div>
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <script>
       let allMessages = [];
+      console.log($('[data-token]')[0].dataset.token)
+      let token = $('[data-token]')[0].dataset.token;
+      localStorage.setItem('token', token);
+      getUserInfo(token);
       $('#getGroupsBtn').on('click', (e) => {
         console.log('clicked button');
         $.ajax({
           url: `https://api.groupme.com/v3/groups?token=${token}`,
           method: 'GET'
         }).done((data) => {
-          $('body').append(`<div id="groups"></div>`)
-          for(let i = 0; i < data.response.length; i++){
-            $('#groups').append(`
-              <a class="groupNames">
-                <p id="${data.response[i].id}">
-                  ${data.response[i].name}
-                </p>
-              </a>
-              <button id="members_in_${data.response[i].id}">Members</button>
-              <button id="messages_in_${data.response[i].id}">Messages</button>
-              `)
-              $(`#messages_in_${data.response[i].id}`).on('click', (e) => {
-                oneGroupsMessages(data.response[i].id, token);
-              });
-          }
+          postGroups(data);
+          appendGroups(data);
         }).fail((err) => {
           console.log(err);
         })
       })
+
       function getAllMessages(before_id,id,token){
         $.ajax({
           url: `https://api.groupme.com/v3/groups/${id}/messages?token=${token}&limit=100&before_id=${before_id}`,
@@ -92,6 +84,58 @@
           getAllMessages(data.response.messages[data.response.messages.length - 1].id, id, token);
         }).fail((err) => {
           console.log(err);
+        })
+      }
+      function postGroups(data){
+        $.ajax({
+          url: `http://localhost:3000/groups`,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data.response),
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+          }
+        }).done((res) => {
+          console.log('groups post:', res);
+        })
+        .fail((err)=>{
+          console.log('groups err:',err)
+        })
+      }
+      function appendGroups(data){
+        $('body').append(`<div id="groups"></div>`)
+        for(let i = 0; i < data.response.length; i++){
+          $('#groups').append(`
+            <a class="groupNames">
+              <p id="${data.response[i].id}">
+                ${data.response[i].name}
+              </p>
+            </a>
+            <button id="members_in_${data.response[i].id}">Members</button>
+            <button id="messages_in_${data.response[i].id}">Messages</button>
+            `)
+            $(`#messages_in_${data.response[i].id}`).on('click', (e) => {
+              oneGroupsMessages(data.response[i].id, token);
+            });
+        }
+      }
+      function getUserInfo(token){
+        $.ajax({
+          url: `https://api.groupme.com/v3/users/me?token=${token}`,
+          method: 'GET'
+        }).done((response) => {
+          console.log('user info:',response.response);
+          $.ajax({
+            url: `http://localhost:3000/user`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(response.response)
+          }).done((res) => {
+            console.log('response from user POST',res);
+            localStorage.setItem('jwt', res.jwt)
+          })
+        }).fail((err) => {
+          console.log('error',err);
         })
       }
 

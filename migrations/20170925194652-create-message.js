@@ -18,13 +18,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       group_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       text: {
         type: Sequelize.TEXT
       },
       user_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       favorites: {
         type: Sequelize.INTEGER

@@ -1,13 +1,14 @@
 const express = require('express');
 const router  = express.Router();
 const rp      = require('request-promise');
+const db      = require('../models');
 
-let token = '7b44b74081cb013563c1017d38f64052';
+let token = '';
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  console.log(req['_parsedOriginalUrl'].query);
-  res.render('index', {title: 'groupjoin'});
+  token = req['_parsedOriginalUrl'].query.match(/access_token=[\d|\w]+/gi)[0].substr(13);
+  res.render('index', {title: 'groupjoin', token: token});
 });
 
 router.post('/', (req,res) => {

@@ -13,12 +13,6 @@ module.exports = (sequelize, DataTypes) => {
     favorites: DataTypes.INTEGER,
     favorited_by: DataTypes.ARRAY(DataTypes.STRING),
     image_url: DataTypes.STRING
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
   });
   return message;
 };

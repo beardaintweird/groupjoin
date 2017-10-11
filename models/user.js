@@ -2,21 +2,17 @@
 module.exports = (sequelize, DataTypes) => {
   var user = sequelize.define('user', {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       primaryKey: true
     },
     name: DataTypes.STRING,
-    phone_number: DataTypes.INTEGER,
+    phone_number: DataTypes.BIGINT,
     image_url: DataTypes.STRING
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-        this.belongsToMany(models.group,{
-          through:'user_group'
-        })
-      }
-    }
   });
+  user.associate = function(models){
+    user.belongsToMany(models.group,{
+      through:'user_group'
+    })
+  }
   return user;
 };
