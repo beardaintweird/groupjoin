@@ -3,17 +3,17 @@ const funcs = {
     let dictionary = {};
     for(let i = 0, x = array.length; i < x; i++){
       let message = array[i].split(" ");
-      let prohibitedWords = ['I','the', 'to', 'a',
+      let prohibitedWords = ['i','the', 'to', 'a',
       'it', 'you', 'is', 'and',
       'for', 'in', 'that', 'at',
       'of', 'be', 'have', 'was',
-      'my', 'if', 'And','But',
+      'my', 'if', 'and','But',
       'too', 'or', 'are', 'like',
-      'just', 'Yeah', 'can', 'this',
+      'just', 'yeah', 'can', 'this',
       'with', 'so', 'i', 'what',
-      'go', 'but', 'What', 'from',
-      'an', 'The', 'then', 'your',
-      'So', 'If', 'as', 'not', 'on', 'do', 'he', 'his', 'him', 'there','got',
+      'go', 'but', 'what', 'from',
+      'an', 'the', 'then', 'your',
+      'so', 'if', 'as', 'not', 'on', 'do', 'he', 'his', 'him', 'there','got',
       'when', 'about', 'how', 'know', 'its', 'did', 'where', 'why','how',
       'would', 'were', 'want', 'has', 'who', 'much', 'had','wanna','by','been',
       'will', 'well', 'tryna', 'doing','new','lot','these', 'rangahang','ansari',

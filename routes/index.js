@@ -9,6 +9,20 @@ router.get('/', function(req, res, next) {
   res.redirect('https://oauth.groupme.com/oauth/authorize?client_id=SeVuZqbwabdg3M9kBXklai4Af8nV7Wy4HCnkNC8CEH9AxicL');
 });
 
+router.get('/users', (req,res) => {
+  db.user.findAll({
+    include: [{
+      model: db.group
+    }]
+  })
+  .then((usersWithGroups) => {
+    res.json(usersWithGroups)
+  })
+  .catch((err) => {
+    res.status(500).json(err);
+  })
+})
+
 router.post('/user', (req,res) => {
   token = req.headers.referer.match(/access_token=[\d|\w]+/gi)[0].substr(13);
   req.body.phone_number = Number(req.body.phone_number.match(/\d+$/gi)[0]);
