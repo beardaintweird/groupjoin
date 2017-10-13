@@ -4,11 +4,7 @@ module.exports = {
     return queryInterface.createTable('messages', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      id: {
         type: Sequelize.BIGINT
       },
       name: {

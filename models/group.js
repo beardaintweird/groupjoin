@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
 
   group.associate = function(models){
     group.belongsToMany(models.user, {
-      through:'user_group'
+      through:'user_group',
+      foreignKey: 'group_id'
     });
     group.hasMany(models.message);
   }

@@ -1,14 +1,8 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var user_group = sequelize.define('user_group', {
-    userId: DataTypes.INTEGER,
-    groupId: DataTypes.INTEGER
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
+    user_id: DataTypes.INTEGER,
+    group_id: DataTypes.INTEGER
   });
   return user_group;
 };

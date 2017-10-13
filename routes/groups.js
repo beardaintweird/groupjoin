@@ -26,12 +26,12 @@ router.post('/', jwtCheck({secret: process.env.JWT_SECRET}),(req,res) => {
       console.log('group find or create result',result[0].dataValues);
       return db.user_group.findOrCreate({
         where: {
-          userId: req.user.data.id,
-          groupId: result[0].dataValues.id
+          user_id: req.user.data.id,
+          group_id: result[0].dataValues.id
         },
         defaults: {
-          userId: req.user.data.id,
-          groupId: result[0].dataValues.id
+          user_id: req.user.data.id,
+          group_id: result[0].dataValues.id
         }
       })
     })

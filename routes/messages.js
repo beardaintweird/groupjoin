@@ -4,23 +4,37 @@ const rp      = require('request-promise');
 const db      = require('../models');
 const analyze = require('../analytics');
 
-let token = '7b44b74081cb013563c1017d38f64052';
-
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('messages get');
 });
 
-//
-router.post('/all', (req,res) => {
-  db.message.bulkCreate(req.body)
-    .then((results) => {
-      res.send('post successful');
+// write the unsaved messages to the database
+router.post('/saveMessages', (req,res) => {
+  console.log('req.body',req.body[0].id);
+  db.message.findAll({
+    where: {
+      id: req.body[0].id
+    },
+    attributes: ['id']
     })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
-    })
+  .then((message) => {
+    // nothing found = []
+    // something found = array with 1 element [dataValues]
+    console.log('message after find by id',message);
+    if(!message.length){
+      return   db.message.bulkCreate(req.body)
+    } else {
+      res.json(message);
+    }
+  })
+  .then((results) => {
+    res.json('post successful');
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).json(err);
+  })
 })
 
 router.get('/words', (req,res) => {
@@ -36,7 +50,8 @@ router.get('/words', (req,res) => {
       // console.log(wordsCount);
       let topWords = [];
       for(let word in wordsCount){
-        if(wordsCount.hasOwnProperty(word) && wordsCount[word] > 100){
+        // minimum amount of occurences for each word to be included
+        if(wordsCount.hasOwnProperty(word) && wordsCount[word] > 10){
           let obj = {
             [word]: wordsCount[word]
           }
@@ -58,7 +73,7 @@ router.get('/words', (req,res) => {
         }
         return num2 - num1
       });
-      res.render('count', { topWords });
+      res.json(topWords);
     })
     .catch((err) => {
       console.log(err);
@@ -97,7 +112,7 @@ router.get('/members', (req,res) => {
         }
         return num2 - num1
       })
-      res.render('messagesByMembers', {messageCount});
+      res.json(messageCount);
     })
     .catch((err) => {
       console.log(err);
@@ -133,7 +148,7 @@ router.get('/mostLiked', (req,res) => {
         }
         return num2 - num1
       })
-      res.render('mostLiked',{likesCount});
+      res.json(likesCount);
     })
     .catch((err) => {
       console.log(err);
@@ -174,7 +189,7 @@ router.get('/mostLikesGiven', (req,res) => {
         }
         return num2 - num1
       })
-      res.render('generosity', {generosityList});
+      res.json(generosityList);
     })
     .catch((err) => {
       console.log(err);

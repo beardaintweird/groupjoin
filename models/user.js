@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
   });
   user.associate = function(models){
     user.belongsToMany(models.group,{
-      through:'user_group'
+      through:'user_group',
+      foreignKey:'user_id'
     })
   }
   return user;

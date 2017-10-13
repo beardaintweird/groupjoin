@@ -86,7 +86,6 @@ const funcs = {
         }
       }
     }
-    console.log('final dictionary',dictionary);
     return dictionary;
   }
 
