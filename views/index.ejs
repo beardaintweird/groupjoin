@@ -35,10 +35,10 @@
           method: 'GET'
         }).done((data) => {
           if(!data){
-            getProlificMembers(token)
-            getFrequentWords(token)
-            getMostLiked(token)
-            getMostLikesGiven(token)
+            getProlificMembers(token, id)
+            getFrequentWords(token, id)
+            getMostLiked(token, id)
+            getMostLikesGiven(token, id)
             return;
           } else {
             for(let i = 0, x = data.response.messages.length, y=data.response.messages; i < x; i++){
@@ -69,10 +69,10 @@
                 getAllMessages(data.response.messages[data.response.messages.length - 1].id, id, token);
               } else {
                 console.log('message found, no need to keep posting',res);
-                getFrequentWords(token)
-                getProlificMembers(token)
-                getMostLiked(token)
-                getMostLikesGiven(token)
+                getFrequentWords(token, id)
+                getProlificMembers(token, id)
+                getMostLiked(token, id)
+                getMostLikesGiven(token, id)
               }
             }).fail((err) => {
               console.log(err);
@@ -151,9 +151,9 @@
           console.log('error',err);
         })
       }
-      function getFrequentWords(token){
+      function getFrequentWords(token, group_id){
         $.ajax({
-          url: `http://localhost:3000/messages/words`,
+          url: `http://localhost:3000/messages/words/${group_id}`,
           method: 'GET'
         }).done((response) => {
           console.log('most frequent words',response);
@@ -161,9 +161,9 @@
           console.log('error',err);
         })
       }
-      function getProlificMembers(token){
+      function getProlificMembers(token, group_id){
         $.ajax({
-          url: `http://localhost:3000/messages/members`,
+          url: `http://localhost:3000/messages/members/${group_id}`,
           method: 'GET'
         }).done((response) => {
           console.log('most prolific members',response);
@@ -171,9 +171,9 @@
           console.log('error',err);
         })
       }
-      function getMostLiked(token){
+      function getMostLiked(token, group_id){
         $.ajax({
-          url: `http://localhost:3000/messages/mostLiked`,
+          url: `http://localhost:3000/messages/mostLiked/${group_id}`,
           method: 'GET'
         }).done((response) => {
           console.log('most liked',response);
@@ -181,9 +181,9 @@
           console.log('error',err);
         })
       }
-      function getMostLikesGiven(token){
+      function getMostLikesGiven(token, group_id){
         $.ajax({
-          url: `http://localhost:3000/messages/mostLikesGiven`,
+          url: `http://localhost:3000/messages/mostLikesGiven/${group_id}`,
           method: 'GET'
         }).done((response) => {
           console.log('most likes given',response);

@@ -37,8 +37,14 @@ router.post('/saveMessages', (req,res) => {
   })
 })
 
-router.get('/words', (req,res) => {
-  db.message.findAll({attributes: ['text']})
+router.get('/words/:group_id', (req,res) => {
+  db.message.findAll({
+    where:
+    {
+      group_id: req.params.group_id
+    },
+    attributes: ['text']
+  })
     .then((words) => {
       words = words.map((word) => {
         return word = word.dataValues.text;
@@ -81,8 +87,13 @@ router.get('/words', (req,res) => {
     })
 })
 
-router.get('/members', (req,res) => {
-  db.message.findAll({attributes: ['name']})
+router.get('/members/:group_id', (req,res) => {
+  db.message.findAll({
+    where: {
+      group_id: req.params.group_id
+    },
+    attributes: ['name']
+  })
     .then((members) => {
       members = members.map((member) => {
         return member = member.dataValues.name;
@@ -120,8 +131,13 @@ router.get('/members', (req,res) => {
     })
 })
 
-router.get('/mostLiked', (req,res) => {
-  db.message.findAll({attributes:['name','favorites']})
+router.get('/mostLiked/:group_id', (req,res) => {
+  db.message.findAll({
+    where: {
+      group_id: req.params.group_id
+    },
+    attributes:['name','favorites']
+  })
     .then((messagesWithLikes) => {
       messagesWithLikes = analyze.mostLikedMessages(messagesWithLikes);
       let likesCount = [];
@@ -156,12 +172,17 @@ router.get('/mostLiked', (req,res) => {
     })
 })
 
-router.get('/mostLikesGiven', (req,res) => {
+router.get('/mostLikesGiven/:group_id', (req,res) => {
   let arrayUserIds = [];
   db.message.aggregate('user_id', 'DISTINCT', { plain: false })
     .then((userIds) => {
       arrayUserIds = userIds;
-      return db.message.findAll({attributes:['name','user_id','favorited_by']})
+      return db.message.findAll({
+        where: {
+          group_id: req.params.group_id
+        },
+        attributes:['name','user_id','favorited_by']
+      })
     })
     .then((messagesWithWhoLiked) => {
       messagesWithWhoLiked = analyze.mostGenerous(messagesWithWhoLiked,arrayUserIds);
