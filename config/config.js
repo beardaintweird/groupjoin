@@ -1,6 +1,6 @@
 module.exports = {
   "production": {
-    "username": "beardaintweird",
+    "username": "",
     "password": process.env.DB_PSWD,
     "database": "groupjoin",
     "host": process.env.DB_HOST,
