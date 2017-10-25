@@ -7,8 +7,8 @@ module.exports = {
     "dialect": "postgres"
   },
   "development": {
-    "username": "",
-    "password": null,
+    "username": "beardaintweird",
+    "password": process.env.BAW_PSWD,
     "database": "groupjoin",
     "host": "localhost",
     "dialect": "postgres"
