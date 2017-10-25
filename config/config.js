@@ -1,3 +1,5 @@
+const dotenv = require('dotenv').config();
+
 module.exports = {
   "production": {
     "username": "beardaintweird",
@@ -8,7 +10,7 @@ module.exports = {
   },
   "development": {
     "username": "beardaintweird",
-    "password": process.env.BAW_PSWD,
+    "password": process.env.ROLE_PSWD,
     "database": "groupjoin",
     "host": "localhost",
     "dialect": "postgres"
